@@ -11,6 +11,9 @@ group = "com.gdh"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
+allOpen {
+    annotation("javax.persistence.Entity")
+}
 repositories {
     mavenCentral()
 }
