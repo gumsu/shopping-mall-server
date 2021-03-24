@@ -30,6 +30,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("mysql:mysql-connector-java")
+
+    implementation("org.mindrot:jbcrypt:0.4")
 }
 
 tasks.withType<KotlinCompile> {
