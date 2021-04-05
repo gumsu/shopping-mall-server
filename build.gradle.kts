@@ -32,6 +32,8 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
 
     implementation("org.mindrot:jbcrypt:0.4")
+
+    implementation ("com.auth0:java-jwt:3.8.1")
 }
 
 tasks.withType<KotlinCompile> {
