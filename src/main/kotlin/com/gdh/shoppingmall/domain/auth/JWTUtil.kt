@@ -2,6 +2,7 @@ package com.gdh.shoppingmall.domain.auth
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.DecodedJWT
 import java.util.*
 
 /**
@@ -12,6 +13,9 @@ import java.util.*
  * 표준 클레임 중 가장 중요한 것은 만료 시간이다. API용 토큰은 몇 시간 단위의 짧은 만료 시간을 가지고 있고,
  * 이 토큰이 만료되었을 때에는 리프레시용 토큰을 이용해 새로운 API 토큰을 발급 받아야 한다.
  * 리프레시 토큰이 만료되었을 때에는 로그인도 다시 해야하므로 리프레시 토큰의 만료 시간은 길게 설정한다.
+ *
+ * verify() -> 토큰의 유효성을 검증하고 DecodedJWT 객체 반환, 만일 토큰이 유효하지 않다면 예외를 던진다.
+ * getClaim() -> 토큰 클레임 반환, 로그인 시 토큰을 생성하여 저장한 email 클레임을 읽는다.
  */
 
 object JWTUtil {
@@ -41,6 +45,21 @@ object JWTUtil {
         .withExpiresAt(Date(Date().time + REFRESH_EXPIRE_TIME))
         .withClaim(JWTClaims.EMAIL, email)
         .sign(refreshAlgorithm)
+
+    fun verify(token: String): DecodedJWT =
+        JWT.require(algorithm)
+            .withIssuer(ISSUER)
+            .build()
+            .verify(token)
+
+    fun verifyRefresh(token: String): DecodedJWT =
+        JWT.require(refreshAlgorithm)
+            .withIssuer(ISSUER)
+            .build()
+            .verify(token)
+
+    fun extractEmail(jwt: DecodedJWT): String =
+        jwt.getClaim(JWTClaims.EMAIL).asString()
 
     object JWTClaims {
         const val EMAIL = "email"
