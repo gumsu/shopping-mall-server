@@ -4,6 +4,7 @@ import com.gdh.shoppingmall.common.ParayoException
 import com.gdh.shoppingmall.domain.auth.UserContextHolder
 import com.gdh.shoppingmall.domain.product.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 
 /**
  * 상품 등록 로직
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * 특별한 클래스에서만 사용되는 확장 함수는 이 함수를 사용할 클래스 정의 아래에 정의하는 것을 권장한다.
  */
 
+@Service
 class ProductRegistrationService @Autowired constructor(
     private val productRepository: ProductRepository,
     private val productImageRepository: ProductImageRepository,
@@ -41,17 +43,18 @@ class ProductRegistrationService @Autowired constructor(
 
     private fun save(product: Product) = productRepository.save(product)
 
-    private fun ProductRegistrationRequest.validateRequest() = when {
-        name.length !in 1..40 ||
-                imageIds.size !in 1..4 ||
-                imageIds.filterNotNull().isEmpty() ||
-                description.length !in 1..500 ||
-                price <= 0 ->
-            throw ParayoException("올바르지 않은 상품 정보입니다.")
-        else -> {
-        }
-    }
-
-    private fun ProductRegistrationRequest.toProduct(images: MutableList<ProductImage>, userId: Long) =
-        Product(name, description, price, categoryId, ProductStatus.SELLABLE, images, userId)
 }
+
+private fun ProductRegistrationRequest.validateRequest() = when {
+    name.length !in 1..40 ||
+            imageIds.size !in 1..4 ||
+            imageIds.filterNotNull().isEmpty() ||
+            description.length !in 1..500 ||
+            price <= 0 ->
+        throw ParayoException("올바르지 않은 상품 정보입니다.")
+    else -> {
+    }
+}
+
+private fun ProductRegistrationRequest.toProduct(images: MutableList<ProductImage>, userId: Long) =
+    Product(name, description, price, categoryId, ProductStatus.SELLABLE, images, userId)

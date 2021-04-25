@@ -31,7 +31,7 @@ import java.util.*
 class ProductImageService @Autowired constructor(
     private val productImageRepository: ProductImageRepository
 ) {
-    @Value("\${parayo.file-upload-default-dir}")
+    @Value("\${parayo.file-upload.default-dir}")
     var uploadPath: String? = ""
 
     fun uploadImage(image: MultipartFile): ProductImageUploadResponse {
