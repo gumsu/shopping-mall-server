@@ -30,6 +30,6 @@ class WebConfig @Autowired constructor(
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/images/**")
-            .addResourceLocations("file:///parayo/images")
+            .addResourceLocations("file:///parayo/images/")
     }
 }
