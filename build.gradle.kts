@@ -34,6 +34,8 @@ dependencies {
     implementation("org.mindrot:jbcrypt:0.4")
 
     implementation ("com.auth0:java-jwt:3.8.1")
+
+    implementation("net.coobird:thumbnailator:0.4.8")
 }
 
 tasks.withType<KotlinCompile> {
