@@ -1,12 +1,14 @@
 package com.gdh.shoppingmall.controller
 
 import com.gdh.shoppingmall.common.ApiResponse
+import com.gdh.shoppingmall.common.ParayoException
 import com.gdh.shoppingmall.domain.product.Product
 import com.gdh.shoppingmall.domain.product.ProductService
 import com.gdh.shoppingmall.domain.product.registration.ProductImageService
 import com.gdh.shoppingmall.domain.product.registration.ProductRegistrationRequest
 import com.gdh.shoppingmall.domain.product.registration.ProductRegistrationService
 import com.gdh.shoppingmall.domain.product.toProductListItemResponse
+import com.gdh.shoppingmall.domain.product.toProductResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -36,4 +38,9 @@ class ProductApiController @Autowired constructor(
         productService.search(categoryId, productId, direction, limit ?: 10)
             .mapNotNull(Product::toProductListItemResponse)
             .let { ApiResponse.ok(it) }
+
+    @GetMapping("/products/{id}")
+    fun get(@PathVariable id: Long) = productService.get(id)?.let {
+        ApiResponse.ok(it.toProductResponse())
+    } ?: throw ParayoException("상품 정보를 찾을 수 없습니다.")
 }
