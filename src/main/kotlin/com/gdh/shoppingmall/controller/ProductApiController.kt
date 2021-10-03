@@ -34,8 +34,9 @@ class ProductApiController @Autowired constructor(
     fun search(@RequestParam productId: Long,
                @RequestParam(required = false) categoryId: Int?,
                @RequestParam direction: String,
+               @RequestParam(required = false) keyword: String?,
                @RequestParam(required = false) limit: Int?) =
-        productService.search(categoryId, productId, direction, limit ?: 10)
+        productService.search(categoryId, productId, direction, keyword, limit ?: 10)
             .mapNotNull(Product::toProductListItemResponse)
             .let { ApiResponse.ok(it) }
 
