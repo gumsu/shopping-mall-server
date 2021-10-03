@@ -13,16 +13,21 @@ import org.springframework.stereotype.Service
  * ProductSearchCondition(categoryId != null, direction) -> 상품의 검색 조건을 표현하기 위한 객체
  *
  * get() -> 상품 하나를 조회하는 로직은 레포지토리에서 id를 읽어오는 것이다.
- */
+ *
+ * ProductSearchCondition 에 hasKeyword 라는 이름으로 키워드 필드가 null이 아닌지 판단하는 필드를 추가 */
 
 @Service
 class ProductService @Autowired constructor(private val productRepository: ProductRepository) {
 
-    fun search(categoryId: Int?, productId: Long, direction: String, limit: Int): List<Product> {
+    fun search(categoryId: Int?, productId: Long, direction: String, keyword: String?, limit: Int): List<Product> {
         val pageable = PageRequest.of(0, limit)
-        val condition = ProductSearchCondition(categoryId != null, direction)
+        val condition = ProductSearchCondition(categoryId != null, direction, keyword != null)
 
         return when (condition) {
+            NEXT_IN_SEARCH -> productRepository
+                .findByIdLessThanAndNameLikeOrderByIdDesc(productId, "%$keyword%", pageable)
+            PREV_IN_SEARCH -> productRepository
+                .findByIdGreaterThanAndNameLikeOrderByIdDesc(productId, "%$keyword%", pageable)
             NEXT_IN_CATEGORY -> productRepository
                 .findByCategoryIdAndIdLessThanOrderByIdDesc(categoryId, productId, pageable)
             PREV_IN_CATEGORY -> productRepository
@@ -33,9 +38,11 @@ class ProductService @Autowired constructor(private val productRepository: Produ
 
     fun get(id: Long) = productRepository.findByIdOrNull(id)
 
-    data class ProductSearchCondition(val categoryIdIsNotNull: Boolean, val direction: String)
+    data class ProductSearchCondition(val categoryIdIsNotNull: Boolean, val direction: String, val hasKeyword: Boolean = false)
 
     companion object {
+        val NEXT_IN_SEARCH = ProductSearchCondition(false, "next", true)
+        val PREV_IN_SEARCH = ProductSearchCondition(false, "prev", true)
         val NEXT_IN_CATEGORY = ProductSearchCondition(true, "next")
         val PREV_IN_CATEGORY = ProductSearchCondition(true, "next")
     }
