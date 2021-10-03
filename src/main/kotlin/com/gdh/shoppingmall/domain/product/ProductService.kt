@@ -2,6 +2,7 @@ package com.gdh.shoppingmall.domain.product
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 /**
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service
  *
  * PageRequest.of(0, limit) -> 각 조건에 맞는 0페이지를 limit 수만큼 가져오기 위한 Pageable을 상속받을 객체
  * ProductSearchCondition(categoryId != null, direction) -> 상품의 검색 조건을 표현하기 위한 객체
+ *
+ * get() -> 상품 하나를 조회하는 로직은 레포지토리에서 id를 읽어오는 것이다.
  */
 
 @Service
@@ -27,6 +30,8 @@ class ProductService @Autowired constructor(private val productRepository: Produ
             else -> throw  IllegalArgumentException("상품 검색 조건 오류")
         }
     }
+
+    fun get(id: Long) = productRepository.findByIdOrNull(id)
 
     data class ProductSearchCondition(val categoryIdIsNotNull: Boolean, val direction: String)
 
