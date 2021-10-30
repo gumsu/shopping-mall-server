@@ -12,12 +12,17 @@ import javax.persistence.*
  *
  * PreUpdate -> JPA 라이프사이클 훅을 지정한다.
  * DB에 데이터 업데이트 명령을 날리기 전에 실행된다.
+ *
+ * FCM 사용하면 유니크한 FCM 토큰이 생성
+ * 한 유저에게 푸시알림을 보내기 위해서는 이 토큰을 사용자 정보와 함께 서버에 저장하고 사용
+ * User 엔티티에 토큰 필드를 추가하고 가입 시 토큰을 함께 저장하고 로그인 시 토큰을 업데이트할 수 있도록 수정
  */
 
 @Entity(name = "user")
 class User(
     var email: String,
     var password: String,
-    var name: String
+    var name: String,
+    var fcmToken: String?
 ) : BaseEntity(){
 }
