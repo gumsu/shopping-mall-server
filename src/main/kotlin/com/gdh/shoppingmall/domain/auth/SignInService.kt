@@ -29,6 +29,9 @@ class SignInService @Autowired constructor(
         if (isNotValidPassword(signInRequest.password, user.password)) {
             throw ParayoException("로그인 정보를 확인해주세요.")
         }
+
+        user.fcmToken = signInRequest.fcmToken
+        userRepository.save(user)
         return responseWithTokens(user)
     }
 

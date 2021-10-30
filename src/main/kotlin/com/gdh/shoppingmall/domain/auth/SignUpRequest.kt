@@ -7,5 +7,6 @@ package com.gdh.shoppingmall.domain.auth
 data class SignUpRequest(
     val email: String,
     val name: String,
-    val password: String
+    val password: String,
+    val fcmToken: String?
 )
